@@ -7,8 +7,8 @@ function [I] = spectral_clustering(S, k, sig)
         [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     end
-    sigma_a = 0.01;
-    sigma_b = 1;
+    sigma_a = 0.000001;
+    sigma_b = 0.3;
     error = 1e-4;
     %% get sigma to minimize the distortion by golded search
     x1 = sigma_a + 0.382 * (sigma_b - sigma_a);
@@ -17,6 +17,7 @@ function [I] = spectral_clustering(S, k, sig)
     v1 = spectral_clustering_fixed_sigma(S, k, x1);
     v2 = spectral_clustering_fixed_sigma(S, k, x2);
     while sigma_b - sigma_a > error
+        close ALL;
         disp('progress');
         disp([sigma_b  sigma_a]);
         if v1 < v2
@@ -59,26 +60,18 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
     for i=1:n
         D(i,i) = sum(A(i,:));
     end
-    % L = D^(-0.5) * A * D^(-0.5);
+    % L = D.^(-0.5) * A * D.^(-0.5);
+    L = zeros(size(A));
     for i=1:size(A,1)
         for j=1:size(A,2)
             L(i,j) = A(i,j) / (sqrt(D(i,i)) * sqrt(D(j,j)));
-            if L(i,j) == inf || isnan(L(i,j))
-                disp('mystery');
-                sig
-                L(i,j)
-                sqrt(D(i,i)) * sqrt(D(j,j))
-            end
         end
     end
     %% 3. Choose top K eigenvectors and Form Matrix X
-    [V, D] = eig(L);
-    [~, I1] = sort(sum(D,2), 'descend'); % sum up row of D, to get eigenvalue array, then sort
-                                         % sum's default is to get a row
-                                         % vector, sum(D,2) gets a colum
-                                         % vector
-    V1 = V(:, I1);
-    X = V1(:, 1:k);
+    [V, D] = eig(L); % *colum* of V is the eigenvectors of L
+                     % V is already sorted in asceding order of eigenvalues
+    X = V(:, end-k+1 : end);
+    
     %% 4. Form Y by renormalizing X
     Y = zeros(size(X));
     for i=1:n
@@ -87,22 +80,37 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
             Y(i,j) = X(i,j)/denominator;
         end
     end
+    
+    figure
+    hold on
+    plot(Y(1:360,1), Y(1:360,2), 'b+');
+    plot(Y(361:720,1), Y(361:720,2), 'r*');
+    hold off
+    
     %% 5. Clustering Y via K-means
     repeat = 1;
     while repeat == 1;
-        [I2 C] = kmeans(Y, k);
+        [I2 C] = kmeans(Y, k, 'replicates', 100);
         draw_result(I2, S);
-        repeat = input('1 to repeat, 0 stop');
+%         repeat = input('1 to repeat, 0 stop');
+        break; 
     end
+    
+    Y_1 = Y(I2==1, :);
+    Y_2 = Y(I2==2, :);
+    figure;
+    hold on
+    plot(Y_1(:,1), Y_1(:,2), 'b+');
+    plot(Y_2(:,1), Y_2(:,2), 'r*');
+    hold off
+    
     %% 6. Get I from previous result
-%    disp('assigned clustering is as follows');
-%    disp(I);
+    I = I2;
     %% compute distortion
     d = distortion(S, I, C);
 end
 
 function draw_result(IDX, S)
-close ALL;
 figure;
 hold on;
 for i=1:size(IDX,1)
@@ -130,6 +138,6 @@ end
 function a = compute_Aij(S, i, j, sig)
     si = S(i, :);
     sj = S(j, :);
-    t2 = -norm(si-sj)^2 / (2 * sig^2);
+    t2 = -norm(si-sj).^2 / (2 * sig^2);
     a = exp(t2);
 end 
