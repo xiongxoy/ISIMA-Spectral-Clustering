@@ -88,13 +88,35 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
         end
     end
     %% 5. Clustering Y via K-means
-    [I2 C] = kmeans(Y, k); 
+    repeat = 1;
+    while repeat == 1;
+        [I2 C] = kmeans(Y, k);
+        draw_result(I2, S);
+        repeat = input('1 to repeat, 0 stop');
+    end
     %% 6. Get I from previous result
-    I = I2;
 %    disp('assigned clustering is as follows');
 %    disp(I);
     %% compute distortion
     d = distortion(S, I, C);
+end
+
+function draw_result(IDX, S)
+close ALL;
+figure;
+hold on;
+for i=1:size(IDX,1)
+    if IDX(i) == 1
+        plot(S(i,1),S(i,2),'m.');
+    elseif IDX(i) == 2
+        plot(S(i,1),S(i,2),'g+');
+    elseif IDX(i) == 3
+        plot(S(i,1),S(i,2),'b*');  
+    elseif IDX(i) == 4
+        disp('ERROR: No Such Kind');
+    end
+end
+hold off;
 end
 %% compute distortion of a clustering
 function d = distortion(S, I, C)
