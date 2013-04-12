@@ -6,7 +6,28 @@ function [I] = spectral_clustering(S, k, sig)
     if nargin == 3
         [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
+    elseif nargin == 2
+        %% using std_deviation
+        sig = std_deviation(S)
+        [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
+        %% using golded_search
+        % I = golded_search(S, k);
+        return
     end
+end
+
+%% S is the input data set
+function sig = std_deviation(S) 
+    S_mean = mean(S);
+    n = size(S, 1);
+    sum = 0;
+    for i=1:n
+        sum = sum + norm(S(i,:) - S_mean)^2;
+    end
+    sig = sum / n;
+end
+
+function [I] = golded_search(S, k)
     sigma_a = 0.000001;
     sigma_b = 0.15;
     error = 1e-4;
