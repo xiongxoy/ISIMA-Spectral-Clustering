@@ -8,7 +8,7 @@ function [I] = spectral_clustering(S, k, sig)
         return
     end
     sigma_a = 0.000001;
-    sigma_b = 0.3;
+    sigma_b = 0.15;
     error = 1e-4;
     %% get sigma to minimize the distortion by golded search
     x1 = sigma_a + 0.382 * (sigma_b - sigma_a);
@@ -82,6 +82,7 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
     end
     
     figure
+    title 'Plot of Y'
     hold on
     plot(Y(1:360,1), Y(1:360,2), 'b+');
     plot(Y(361:720,1), Y(361:720,2), 'r*');
@@ -112,6 +113,7 @@ end
 
 function draw_result(IDX, S)
 figure;
+title 'Plot of Result'
 hold on;
 for i=1:size(IDX,1)
     if IDX(i) == 1
