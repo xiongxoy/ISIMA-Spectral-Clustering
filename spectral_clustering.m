@@ -75,14 +75,11 @@ function I = spectral_clustering_from_affinity_mat(A, k)
         end
     end
 
-        %% 5. Clustering Y via K-means
-    repeat = 1;
-    while repeat == 1;
-        [I C] = kmeans(Y, k, 'replicates', 100);
-%       draw_result(I2, S);
-%       repeat = input('1 to repeat, 0 stop');
-        break;
-    end
+    %% 5. Clustering Y via K-means
+    repeat_nr = 50;
+    [I C] = kmeans(Y, k, 'replicates', repeat_nr);
+%   draw_result(I2, S);
+%   repeat = input('1 to repeat, 0 stop');
 end
 %% one pass of the algorithm
 % TODO refactor this algorithm for more general use
@@ -126,6 +123,7 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
         end
     end
 
+    %% for debug
     figure
     title 'Plot of Y'
     hold on
@@ -142,13 +140,14 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
         break;
     end
 
+    %% for debug
     Y_1 = Y(I2==1, :);
     Y_2 = Y(I2==2, :);
     figure;
-    hold on
+    hold on;
     plot(Y_1(:,1), Y_1(:,2), 'b+');
     plot(Y_2(:,1), Y_2(:,2), 'r*');
-    hold off
+    hold off;
 
     %% 6. Get I from previous result
     I = I2;
