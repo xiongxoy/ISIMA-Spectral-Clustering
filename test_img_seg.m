@@ -7,7 +7,8 @@ end
 I = flipud(I');
 k = 3;
 %% segmenting image
-IDX = image_seg(I, k, 'Intensity');
+type{end+1} = 'Intensity';
+IDX = image_seg(I, k, type);
 %% create masks
 masks = cell(1, k);
 masks = extract_masks(IDX);

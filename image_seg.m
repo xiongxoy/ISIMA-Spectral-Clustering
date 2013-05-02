@@ -9,7 +9,7 @@ function [IDX] = image_seg(I, k, type)
   end
 
   if nargin == 2
-    type = 'Intensity';
+    type = {'Intensity'};
   end
 
   [p q] = size(I);
