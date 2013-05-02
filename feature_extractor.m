@@ -9,10 +9,14 @@ function F = feature_extractor(I, type)
     return
   end
 
+  disp('A')
   F = cell(size(I));
   if ~isempty(strfind(type, 'Intensity'))
+    disp('B')
     add_Intensity(I, F);
+    disp('C')
   end
+  disp('D')
   if ~isempty(strfind(type, 'Partial_X'))
     error('Error: Partial_X is not implemented yet.')
   end

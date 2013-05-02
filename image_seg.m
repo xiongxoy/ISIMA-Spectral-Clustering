@@ -36,11 +36,17 @@ function A = feature_fusion(D, d_max, type)
 end
 
 function IDX = spectral_clustering_segmentation(I, k, type)
+  disp('A')
   F = feature_extractor(I, type);
+  disp('B')
   [D, d_max] = compute_similarity(F, type);
+  disp('C')
   A = feature_fusion(D, d_max, type);
+  disp('D')
   A = positional_filtering(A, F);
+  disp('E')
   IDX = spectral_clustering_from_affinity_mat(A, k);
+  disp('F')
 end
 
 function A = positional_filtering(A, F)
