@@ -6,7 +6,6 @@ function F = feature_extractor(I, type)
 
   if nargin == 1
     error('Error: Please Specify Feature Type.')
-    return
   end
 
   disp('A')

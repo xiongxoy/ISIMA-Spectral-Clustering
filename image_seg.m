@@ -9,11 +9,11 @@ function [IDX] = image_seg(I, k, type)
   end
 
   if nargin == 2
-    type = 'Intensity'
+    type = 'Intensity';
   end
 
   [p q] = size(I);
-  IDX1 = spectral_clustering_segmentation(I, k, type)
+  IDX1 = spectral_clustering_segmentation(I, k, type);
   IDX = reshape(IDX1, p, q);
 end
 
@@ -21,10 +21,6 @@ end
 %% each colum is a factor of wij
 %% the 2-norm of S{i}{f_number} - S{j}{f_number} is D(i,j)
 function A = feature_fusion(D, d_max, type)
-  % TODO 分别计算特征，然后乘起来，就得到了我们需要的特征
-  % 现在是简答相乘，不考虑Feature的特性，应该有一个预处理的函数
-  % 先写个dummy函数吧
-  % F{i, f_number} -> D{i,j,f_number} -> sigma = max(D) / 6 ->
   % W(i,j) = W(i,j) * exp( (D{i,j}/sigma)^2 ) ->
   % norm(i1-i2, j1-j2) in range/not in range
   [n, n, k] = size(D);
@@ -78,6 +74,7 @@ function [D d_max] = compute_similarity(F, type)
   for i = 1:p*q
     for j = 1:p*q
       for k = 1:f_nr
+        disp('similarity')
         [p_xi p_yi] = get_index(i, p, q);
         [p_xj p_yj] = get_index(j, p, q);
         D(i, j, k) = norm( F{p_xi, p_yi, k} - F{p_xj, p_yj, k} );
