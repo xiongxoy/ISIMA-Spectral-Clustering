@@ -8,27 +8,25 @@ function F = feature_extractor(I, type)
   end
   disp('A')
   F = {};
-  if 0 ~= cell_find(type, 'Intensity')
+  if strcmp(type, 'Intensity')
     disp('B')
-    k = cell_find(type, 'Intensity');
-    A = get_Intensity(I);
-    F(:,:, k) = A;
+    F = num2cell(I);
     disp('C')
   end
   disp('D')
-  if 0 ~= cell_find(type, 'Partial_X')
+  if strcmp(type, 'Partial_X')
     error('Error: Partial_X is not implemented yet.')
   end
-  if 0 ~= cell_find(type, 'Partial_Y')
+  if strcmp(type, 'Partial_Y')
     error('Error: Partial_Y is not implemented yet.')
   end
-  if 0 ~= cell_find(type, 'Variance')
+  if strcmp(type, 'Variance')
     get_Variance(I, F);
   end
-  if 0 ~= cell_find(type, 'Mean')
+  if strcmp(type, 'Mean')
     get_Mean(I, F);
   end
-  % if 0 ~= (cell_find(type, 'XY'))
+  % if  strcmp(type, 'XY')
   % XY information is naturally encoded in the feature matrix F
   % end
   if isempty(F)

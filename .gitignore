@@ -2,3 +2,4 @@ spectral-clustering-paper.pdf
 Spectral_Clustering/
 spec-clus_min-cut/
 resource/
+*.mat
