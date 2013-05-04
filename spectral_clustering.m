@@ -7,7 +7,7 @@ function [I] = spectral_clustering(S, k, sig)
         [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     elseif nargin == 2
-        [sig ~] = get_sigma_and_D(S);
+        % TODO use the 1/6 of distance range as sigma
         [I, ~] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     end

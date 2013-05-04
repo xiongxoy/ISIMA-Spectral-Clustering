@@ -1,4 +1,4 @@
-function [IDX] = image_seg(I, k, type)
+function [IDX] = image_seg(I, k, types)
 % This function is used for segmenting an image
 % @param I the input image, only gray scale image is allowed
 % @param k the image should be segemented into k parts
@@ -9,18 +9,18 @@ function [IDX] = image_seg(I, k, type)
   end
 
   if nargin == 2
-    type = {'Intensity'};
+    types = {'Intensity'};
   end
 
   [p q] = size(I);
-  IDX1 = spectral_clustering_segmentation(I, k, type);
+  IDX1 = spectral_clustering_segmentation(I, k, types);
   IDX = reshape(IDX1, p, q);
 end
 
 %% TODO S is a matrix of cells,
 %% each colum is a factor of wij
 %% the 2-norm of S{i}{f_number} - S{j}{f_number} is D(i,j)
-function A = feature_fusion(D, d_max, type)
+function A = feature_fusion(D, d_max)
   % W(i,j) = W(i,j) * exp( (D{i,j}/sigma)^2 ) ->
   % norm(i1-i2, j1-j2) in range/not in range
   [n, n, k] = size(D);
@@ -31,15 +31,15 @@ function A = feature_fusion(D, d_max, type)
   A = exp(-A);
 end
 
-function IDX = spectral_clustering_segmentation(I, k, type)
+function IDX = spectral_clustering_segmentation(I, k, types)
   disp('A')
-  F = feature_extractor(I, type);
+  F = feature_extractor(I, types);
   disp('B')
-  [D, d_max] = compute_similarity(F, type);
+  [D, d_max] = compute_similarity(F);
   disp('C')
-  A = feature_fusion(D, d_max, type);
+  A = feature_fusion(D, d_max);
   disp('D')
-  A = positional_filtering(A, F);
+  %A = positional_filtering(A, F);
   disp('E')
   IDX = spectral_clustering_from_affinity_mat(A, k);
   disp('F')
@@ -64,32 +64,5 @@ function A = positional_filtering(A, F)
   end
 end
 
-function [D d_max] = compute_similarity(F, type)
-  p = size(F, 1);
-  q = size(F, 2);
-  f_nr = size(F, 3);
-  D = zeros(p*q, p*q, f_nr);
-  d_max = zeros(1, f_nr);
 
-  for i = 1:p*q
-    for j = 1:p*q
-      for k = 1:f_nr
-        disp('similarity')
-        [p_xi p_yi] = get_index(i, p, q);
-        [p_xj p_yj] = get_index(j, p, q);
-        D(i, j, k) = norm( F{p_xi, p_yi, k} - F{p_xj, p_yj, k} );
-        if D(i, j, k) > d_max(k)
-          d_max(k) = D(i, j, k);
-        end
-      end
-    end
-  end
 
-end
-
-function [p_x p_y] = get_index(i, p, q)
-  % i = (p_x-1) * q + p_y
-  p_y = mod(i, q);
-  i = i - p_y;
-  p_x = i / q + 1;
-end

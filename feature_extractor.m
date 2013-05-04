@@ -3,14 +3,12 @@ function F = feature_extractor(I, type)
 % @param I inpute image
 % @param type feature types in the format  'Feature1_Feature2..._FeatureN'
 % @return F a cell matrix specifying feature vetors for each pixel
-
   if nargin == 1
     error('Error: Please Specify Feature Type.')
   end
-
   disp('A')
   F = {};
-  if 0 != cell_find(type, 'Intensity')
+  if 0 ~= cell_find(type, 'Intensity')
     disp('B')
     k = cell_find(type, 'Intensity');
     A = get_Intensity(I);
@@ -18,24 +16,25 @@ function F = feature_extractor(I, type)
     disp('C')
   end
   disp('D')
-  if 0 != cell_find(type, 'Partial_X')
+  if 0 ~= cell_find(type, 'Partial_X')
     error('Error: Partial_X is not implemented yet.')
   end
-  if 0 != cell_find(type, 'Partial_Y')
+  if 0 ~= cell_find(type, 'Partial_Y')
     error('Error: Partial_Y is not implemented yet.')
   end
-  if 0 != cell_find(type, 'Variance')
+  if 0 ~= cell_find(type, 'Variance')
     get_Variance(I, F);
   end
-  if 0 != cell_find(type, 'Mean')
+  if 0 ~= cell_find(type, 'Mean')
     get_Mean(I, F);
   end
-  % if 0 != (cell_find(type, 'XY'))
+  % if 0 ~= (cell_find(type, 'XY'))
   % XY information is naturally encoded in the feature matrix F
   % end
   if isempty(F)
     warning('No Feature is Extracted');
   end
+  disp('E')
 end
 
 function get_Partial_X(I, F)
@@ -80,7 +79,7 @@ function A = get_Intensity(I)
   A = cell(p, q);
   for i = 1:p
     for j = 1:q
-      A{i,j} =  I(i,j);
+      A{i,j} =  [I(i,j)];
     end
   end
 end

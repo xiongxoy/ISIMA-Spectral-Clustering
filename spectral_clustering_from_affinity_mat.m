@@ -1,4 +1,5 @@
 function I = spectral_clustering_from_affinity_mat(A, k)
+    n = size(A,1);
     %% 2. Get Laplacian
     D = zeros(n);
     for i=1:n
