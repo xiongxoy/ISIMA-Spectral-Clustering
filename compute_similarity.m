@@ -4,7 +4,7 @@ function A = compute_similarity(F)
   p = size(F, 1);
   q = size(F, 2);
 
-  r = 1;
+  r = 5;
   D = inf(p*q, p*q);
   d_max = 0;
 
@@ -53,8 +53,8 @@ function A = compute_similarity(F)
   %imagesc(A2)
   %title 'affinity mat of P'
 
-  %A =  A1 .* A2;
-  A = A1;
+  A =  A1 .* A2;
+  %A = A1;
   for i = 1:n
     for j = 1:n
       if point_distance(i, j, p, q) > r

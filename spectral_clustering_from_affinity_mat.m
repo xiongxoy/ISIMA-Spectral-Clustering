@@ -27,8 +27,11 @@ function I = spectral_clustering_from_affinity_mat(A, k)
         end
     end
 
-    plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.'); %debug
-    pause;
+    if k == 3
+      plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.'); %debug
+      title 'Plot of Y'
+      pause;
+    end
 
     %% 5. Clustering Y via K-means
     repeat_nr = 50;

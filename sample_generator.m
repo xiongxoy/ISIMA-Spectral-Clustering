@@ -2,12 +2,23 @@
 %   Date: 9/4/2013
 function S = sample_generator(sample_name)
     if strcmp('3-cocentric-circles',sample_name) == 1
-       S = three_cocentric_circles();
+      S = three_cocentric_circles();
     elseif strcmp('2-cocentric-circles',sample_name) == 1
-        S = two_cocentric_circles();
+      S = two_cocentric_circles();
+    elseif strcmp('3-class-rectangle', sample_name) == 1
+      S = three_class_rectangle();
     end
 end
 
+function S = three_class_rectangle()
+      p = 20;
+      q = 20;
+      S = zeros(p, q);
+      S(1:p/2, 1:q/2) = 0;
+      S(1:p/2, q/2+1:q) = 30;
+      S(p/2+1:p, q/2+1:q) = 30;
+      S(p/2+1:p, 1:q/2) = 90;
+end
 %% two circles
 function S = two_cocentric_circles(n)
     center = [2.5 2.5];
