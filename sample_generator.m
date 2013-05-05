@@ -11,16 +11,16 @@ function S = sample_generator(sample_name)
 end
 
 function S = three_class_rectangle()
-      p = 20;
-      q = 20;
-      S = zeros(p, q);
-      S(1:p/2, 1:q/2) = 0;
-      S(1:p/2, q/2+1:q) = 30;
-      S(p/2+1:p, q/2+1:q) = 30;
-      S(p/2+1:p, 1:q/2) = 90;
+    p = 20;
+    q = 20;
+    S = zeros(p, q);
+    S(1:p/2, 1:q/2) = 0;
+    S(1:p/2, q/2+1:q) = 30;
+    S(p/2+1:p, q/2+1:q) = 30;
+    S(p/2+1:p, 1:q/2) = 90;
 end
 %% two circles
-function S = two_cocentric_circles(n)
+function S = two_cocentric_circles()
     center = [2.5 2.5];
     S = [];
     S = append_circle(S, 1, center);
@@ -30,7 +30,7 @@ function S = two_cocentric_circles(n)
 end
 
 %% three circles
-function S = three_cocentric_circles(n)
+function S = three_cocentric_circles()
     center = [2.5 2.5];
     S = [];
     S = append_circle(S, 0.5, center);

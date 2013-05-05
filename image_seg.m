@@ -29,17 +29,8 @@ function A = get_affinity_mat(D, d_max)
 end
 
 function IDX = spectral_clustering_segmentation(I, k, types)
-  disp('A')
   F = feature_extractor(I, types);
-  disp('B')
   A = compute_similarity(F);
-  disp('C')
-  disp('D')
-  disp('E')
   IDX = spectral_clustering_from_affinity_mat(A, k);
-  disp('F')
 end
-
-
-
 
