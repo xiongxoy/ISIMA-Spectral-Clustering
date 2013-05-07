@@ -5,7 +5,7 @@ function A = compute_similarity(F)
   q = size(F, 2);
 
   r = 5;
-  D = inf(p*q, p*q);
+  D = zeros(p*q, p*q);
   d_max = 0;
 
   n = p*q;
@@ -23,7 +23,7 @@ function A = compute_similarity(F)
     end
   end
 
-  P = inf(n, n);
+  P = zeros(n, n);
   p_max = min(r, floor( (n-1) * sqrt(2) ));
   %% deal with position information
   for i = 1:n
@@ -36,39 +36,48 @@ function A = compute_similarity(F)
     end
   end
 
-  %figure;clf;
-  %imagesc(D);
-  %title 'distance mat of D'
-  %figure;clf;
-  %imagesc(P);
-  %title 'distance mat of P'
+  figure;clf;
+  imagesc(D);
+  title 'distance mat of D'
+  figure;clf;
+  imagesc(P);
+  title 'distance mat of P'
   %D = D ./ d_max;
   %P = P ./ p_max;
+
   A1 = get_affinity_mat(D, d_max);
   A2 = get_affinity_mat(P, p_max);
-  %figure;clf;
-  %imagesc(A1)
-  %title 'affinity mat of D'
-  %figure;clf;
-  %imagesc(A2)
-  %title 'affinity mat of P'
-
   A =  A1 .* A2;
   %A = A1;
   for i = 1:n
-    for j = 1:n
+    for j = 1:i
       if point_distance(i, j, p, q) > r
         A(i, j) = 0;
+        A(j, i) = 0;
       end
     end
   end
+
+  figure;clf;
+  imagesc(A1)
+  title 'affinity mat of D'
+  figure;clf;
+  imagesc(A2)
+  title 'affinity mat of P'
+  figure;clf;
+  imagesc(A);
+  save('A');
+  title 'affinity mat of final A'
+  pause; close all;
 end
 
 function A = get_affinity_mat(D, d_max)
   my_sigma = d_max / 7;
   A = (D(:, :) ./ my_sigma) .^ 2;
+  idx_diag = boolean(eye(size(D)));
   sprintf('sigma is %d. \n', my_sigma)  %debug
   A = exp(-A);
+  A(idx_diag) = 0;
 end
 
 function d = point_distance(i, j, p, q)
