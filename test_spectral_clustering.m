@@ -5,9 +5,8 @@
 %% generator test S
 S = sample_generator('2-cocentric-circles');
 %% clustering and plot
-%   IDX = spectral_clustering(S, 2, 0.0303);
-    IDX = spectral_clustering(S, 2);
-%   IDX = spectral_clustering(S, 2);
+    %IDX = spectral_clustering(S, 2, 0.05);
+   IDX = spectral_clustering(S, 2, 0.05);
 figure;
 title 'Final Result'
 hold on;

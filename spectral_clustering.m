@@ -4,7 +4,7 @@
 % k is the cluster number
 function [I] = spectral_clustering(S, k, sig)
     if nargin == 3
-        [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
+        [I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     elseif nargin == 2
         % TODO use the 1/6 of distance range as sigma
@@ -44,7 +44,7 @@ function [I] = golded_search(S, k)
     sig = 0.5 * (sigma_a + sigma_b);
     disp('sig');
     disp(sig);
-    [I,d ] = spectral_clustering_fixed_sigma(S, k, sig);
+    [I,d] = spectral_clustering_fixed_sigma(S, k, sig);
 end
 
 function I = spectral_clustering_from_affinity_mat(A, k)
@@ -132,13 +132,7 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
     hold off
 
     %% 5. Clustering Y via K-means
-    repeat = 1;
-    while repeat == 1;
-        [I2 C] = kmeans(Y, k, 'replicates', 100);
-        draw_result(I2, S);
-%         repeat = input('1 to repeat, 0 stop');
-        break;
-    end
+        [I2 C] = kmeans(Y, k, 'replicates', 50);
 
     %% for debug
     Y_1 = Y(I2==1, :);
