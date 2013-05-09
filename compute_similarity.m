@@ -4,7 +4,7 @@ function A = compute_similarity(F)
   p = size(F, 1);
   q = size(F, 2);
 
-  r = 5;
+  r = 1e5;
   D = zeros(p*q, p*q);
   d_max = 0;
 
@@ -30,7 +30,7 @@ function A = compute_similarity(F)
     for j = 1:i
       tmp = point_distance(i, j, p, q);
       if tmp <= r
-        P(i, j) = tmp; % otherwise it would be inf;
+        P(i, j) = tmp; % otherwise it would be 0;
       end
       P(j, i) = P(i, j);
     end
@@ -46,9 +46,9 @@ function A = compute_similarity(F)
   %P = P ./ p_max;
 
   A1 = get_affinity_mat(D, d_max);
-  A2 = get_affinity_mat(P, p_max);
-  A =  A1 .* A2;
-  %A = A1;
+  A2 = get_affinity_mat(P, p_max, 4.0);
+  %A =  A1 .* A2;
+  A = A1;
   for i = 1:n
     for j = 1:i
       if point_distance(i, j, p, q) > r
@@ -71,8 +71,12 @@ function A = compute_similarity(F)
   pause; close all;
 end
 
-function A = get_affinity_mat(D, d_max)
-  my_sigma = d_max / 7;
+function A = get_affinity_mat(D, d_max, sigma_)
+  if nargin == 3
+    my_sigma = sigma_;
+  else
+    my_sigma = d_max / 7;
+  end
   A = (D(:, :) ./ my_sigma) .^ 2;
   idx_diag = boolean(eye(size(D)));
   sprintf('sigma is %d. \n', my_sigma)  %debug

@@ -16,7 +16,7 @@ for i=1:size(IDX,1)
     elseif IDX(i) == 2
         plot(S(i,1),S(i,2),'g+');
     elseif IDX(i) == 3
-        plot(S(i,1),S(i,2),'b*');  
+        plot(S(i,1),S(i,2),'b*');
     elseif IDX(i) == 4
         disp('ERROR: No Such Kind');
     end

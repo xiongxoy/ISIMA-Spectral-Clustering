@@ -8,7 +8,16 @@ function [I] = spectral_clustering(S, k, sig)
         return
     elseif nargin == 2
         % TODO use the 1/6 of distance range as sigma
-        [I, ~] = spectral_clustering_fixed_sigma(S, k, sig);
+        sig_x = [0.01:0.01:0.3];
+        sig_x_ = [0.3:0.01:3];
+        sig_x = [sig_x sig_x_];
+        sig_y = zeros(size(sig_x));
+        for i = 1:size(sig_y, 2)
+          [~, sig_y(i)] = spectral_clustering_fixed_sigma(S, k, sig_x(i));
+        end
+        plot(sig_x, sig_y, 'b*');
+        sig = 0.3;
+        [I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     end
 end
@@ -114,6 +123,16 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
                      % V is already sorted in asceding order of eigenvalues
     X = V(:, end-k+1 : end);
 
+    figure;
+    plot(S(:,1), S(:,2), '.');
+    figure;
+    plot(X(:, 1), '*');
+    figure;
+    plot(X(:, 2), '*');
+    figure;
+    plot(X(:,1), X(:,2), '.');
+
+
     %% 4. Form Y by renormalizing X
     Y = zeros(size(X));
     for i=1:n
@@ -123,7 +142,7 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
         end
     end
 
-    %% for debug
+    % for debug
     figure
     title 'Plot of Y'
     hold on
@@ -135,13 +154,13 @@ function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
         [I2 C] = kmeans(Y, k, 'replicates', 50);
 
     %% for debug
-    Y_1 = Y(I2==1, :);
-    Y_2 = Y(I2==2, :);
-    figure;
-    hold on;
-    plot(Y_1(:,1), Y_1(:,2), 'b+');
-    plot(Y_2(:,1), Y_2(:,2), 'r*');
-    hold off;
+    %Y_1 = Y(I2==1, :);
+    %Y_2 = Y(I2==2, :);
+    %figure;
+    %hold on;
+    %plot(Y_1(:,1), Y_1(:,2), 'b+');
+    %plot(Y_2(:,1), Y_2(:,2), 'r*');
+    %hold off;
 
     %% 6. Get I from previous result
     I = I2;
