@@ -10,6 +10,8 @@ function F = feature_extractor(I, type)
   if strcmp(type, 'Intensity')
     F = append_F(F, I);
     %% debug
+    %F = append_F(F, get_pos_X(I));
+    %F = append_F(F, get_pos_Y(I));
     %F = append_F(F, get_Variance(I));
     %F = append_F(F, get_Mean(I));
   end
@@ -42,6 +44,20 @@ for i = 1:p
   end
 end
 F_ = F;
+end
+function S = get_pos_X(I)
+  [p q] = size(I);
+  S = ones(size(I));
+  for i = 1:p
+    S(i, :) = i;
+  end
+end
+function S = get_pos_Y(I)
+  [p q] = size(I);
+  S = ones(size(I));
+  for i = 1:q
+    S(:, i) = i;
+  end
 end
 
 function get_Partial_X(I, F)
