@@ -1,30 +1,25 @@
-%% 
+%%
 % I(i) is the cluster the corresponding row i lies in
 % S is the input data set, each row is a data point
 % k is the cluster number
 function [I] = spectral_clustering(S, k, sig)
     if nargin == 3
-        [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
+        [I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     elseif nargin == 2
-        %% using std_deviation
-        sig = std_deviation(S)
-        [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
-        %% using golded_search
-        % I = golded_search(S, k);
+        % TODO use the 1/6 of distance range as sigma
+        sig_x = [0.01:0.01:0.3];
+        sig_x_ = [0.3:0.01:3];
+        sig_x = [sig_x sig_x_];
+        sig_y = zeros(size(sig_x));
+        for i = 1:size(sig_y, 2)
+          [~, sig_y(i)] = spectral_clustering_fixed_sigma(S, k, sig_x(i));
+        end
+        plot(sig_x, sig_y, 'b*');
+        sig = 0.3;
+        [I] = spectral_clustering_fixed_sigma(S, k, sig);
         return
     end
-end
-
-%% S is the input data set
-function sig = std_deviation(S) 
-    S_mean = mean(S);
-    n = size(S, 1);
-    sum = 0;
-    for i=1:n
-        sum = sum + norm(S(i,:) - S_mean)^2;
-    end
-    sig = sum / n;
 end
 
 function [I] = golded_search(S, k)
@@ -58,11 +53,46 @@ function [I] = golded_search(S, k)
     sig = 0.5 * (sigma_a + sigma_b);
     disp('sig');
     disp(sig);
-    [~,I] = spectral_clustering_fixed_sigma(S, k, sig);
+    [I,d] = spectral_clustering_fixed_sigma(S, k, sig);
 end
 
+function I = spectral_clustering_from_affinity_mat(A, k)
+    %% 2. Get Laplacian
+    D = zeros(n);
+    for i=1:n
+        D(i,i) = sum(A(i,:));
+    end
+    % L = D.^(-0.5) * A * D.^(-0.5);
+    L = zeros(size(A));
+    for i=1:size(A,1)
+        for j=1:size(A,2)
+            L(i,j) = A(i,j) / (sqrt(D(i,i)) * sqrt(D(j,j)));
+        end
+    end
+
+    %% 3. Choose top K eigenvectors and Form Matrix X
+    [V, D] = eig(L); % *colum* of V is the eigenvectors of L
+                     % V is already sorted in asceding order of eigenvalues
+    X = V(:, end-k+1 : end);
+
+    %% 4. Form Y by renormalizing X
+    Y = zeros(size(X));
+    for i=1:n
+        denominator = norm(X(i,:));
+        for j=1:k
+            Y(i,j) = X(i,j)/denominator;
+        end
+    end
+
+    %% 5. Clustering Y via K-means
+    repeat_nr = 50;
+    [I C] = kmeans(Y, k, 'replicates', repeat_nr);
+%   draw_result(I2, S);
+%   repeat = input('1 to repeat, 0 stop');
+end
 %% one pass of the algorithm
-function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
+% TODO refactor this algorithm for more general use
+function [I, d] = spectral_clustering_fixed_sigma(S, k, sig)
     n = size(S, 1); % data set size
     l = size(S, 2); % data dimension
     A = zeros(n);
@@ -76,7 +106,7 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
             end
         end
     end
-    %% 2. Get Laplacian 
+    %% 2. Get Laplacian
     D = zeros(n);
     for i=1:n
         D(i,i) = sum(A(i,:));
@@ -92,7 +122,17 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
     [V, D] = eig(L); % *colum* of V is the eigenvectors of L
                      % V is already sorted in asceding order of eigenvalues
     X = V(:, end-k+1 : end);
-    
+
+    figure;
+    plot(S(:,1), S(:,2), '.');
+    figure;
+    plot(X(:, 1), '*');
+    figure;
+    plot(X(:, 2), '*');
+    figure;
+    plot(X(:,1), X(:,2), '.');
+
+
     %% 4. Form Y by renormalizing X
     Y = zeros(size(X));
     for i=1:n
@@ -101,35 +141,31 @@ function [d, I] = spectral_clustering_fixed_sigma(S, k, sig)
             Y(i,j) = X(i,j)/denominator;
         end
     end
-    
+
+    % for debug
     figure
     title 'Plot of Y'
     hold on
     plot(Y(1:360,1), Y(1:360,2), 'b+');
     plot(Y(361:720,1), Y(361:720,2), 'r*');
     hold off
-    
+
     %% 5. Clustering Y via K-means
-    repeat = 1;
-    while repeat == 1;
-        [I2 C] = kmeans(Y, k, 'replicates', 100);
-        draw_result(I2, S);
-%         repeat = input('1 to repeat, 0 stop');
-        break; 
-    end
-    
-    Y_1 = Y(I2==1, :);
-    Y_2 = Y(I2==2, :);
-    figure;
-    hold on
-    plot(Y_1(:,1), Y_1(:,2), 'b+');
-    plot(Y_2(:,1), Y_2(:,2), 'r*');
-    hold off
-    
+        [I2 C] = kmeans(Y, k, 'replicates', 50);
+
+    %% for debug
+    %Y_1 = Y(I2==1, :);
+    %Y_2 = Y(I2==2, :);
+    %figure;
+    %hold on;
+    %plot(Y_1(:,1), Y_1(:,2), 'b+');
+    %plot(Y_2(:,1), Y_2(:,2), 'r*');
+    %hold off;
+
     %% 6. Get I from previous result
     I = I2;
     %% compute distortion
-    d = distortion(S, I, C);
+    d = distortion(Y, I, C);
 end
 
 function draw_result(IDX, S)
@@ -142,7 +178,7 @@ for i=1:size(IDX,1)
     elseif IDX(i) == 2
         plot(S(i,1),S(i,2),'g+');
     elseif IDX(i) == 3
-        plot(S(i,1),S(i,2),'b*');  
+        plot(S(i,1),S(i,2),'b*');
     elseif IDX(i) == 4
         disp('ERROR: No Such Kind');
     end
@@ -163,4 +199,4 @@ function a = compute_Aij(S, i, j, sig)
     sj = S(j, :);
     t2 = -norm(si-sj).^2 / (2 * sig^2);
     a = exp(t2);
-end 
+end
