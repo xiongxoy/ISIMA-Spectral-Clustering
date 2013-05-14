@@ -1,4 +1,4 @@
-function [IDX] = image_seg(I, k, types)
+function [IDX] = image_seg(I, k)
 % This function is used for segmenting an image
 % @param I the input image, only gray scale image is allowed
 % @param k the image should be segemented into k parts
@@ -13,13 +13,13 @@ function [IDX] = image_seg(I, k, types)
   end
 
   [p q] = size(I);
-  IDX1 = spectral_clustering_segmentation(I, k, types);
+  IDX1 = spectral_clustering_segmentation(I, k);
   IDX = reshape(IDX1, p, q);
 end
 
 
-function IDX = spectral_clustering_segmentation(I, k, types)
-  F = feature_extractor(I, types);
+function IDX = spectral_clustering_segmentation(I, k)
+  F = feature_extractor(I);
   save('F');
   A = compute_similarity(F);
   IDX = spectral_clustering_from_affinity_mat(A, k);

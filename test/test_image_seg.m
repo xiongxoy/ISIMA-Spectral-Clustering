@@ -18,8 +18,7 @@ end
 %imshow(I);
 
 k = 3;
-types = 'Intensity';
-IDX = image_seg(I, k, types);
+IDX = image_seg(I, k);
 close all;
 for i = 1:k
   figure(i); clf;

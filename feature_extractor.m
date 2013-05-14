@@ -1,35 +1,13 @@
-function F = feature_extractor(I, type)
-% This function extracts features specified by @a type from @a I
+function F = feature_extractor(I)
+% This function extracts features specified by @a type from input image
 % @param I inpute image
-% @param type feature types in the format  'Feature1_Feature2..._FeatureN'
 % @return F a cell matrix specifying feature vetors for each pixel
-  if nargin == 1
-    error('Error: Please Specify Feature Type.')
-  end
   F = cell(size(I));
-  if strcmp(type, 'Intensity')
-    F = append_F(F, I);
-    %% debug
-    %F = append_F(F, get_pos_X(I));
-    %F = append_F(F, get_pos_Y(I));
-    %F = append_F(F, get_Variance(I));
-    %F = append_F(F, get_Mean(I));
-  end
-  if strcmp(type, 'Partial_X')
-    error('Error: Partial_X is not implemented yet.')
-  end
-  if strcmp(type, 'Partial_Y')
-    error('Error: Partial_Y is not implemented yet.')
-  end
-  if strcmp(type, 'Variance')
-    F = append_F(F, get_Variance(I));
-  end
-  if strcmp(type, 'Mean')
-    F = append_F(F, get_Mean(I));
-  end
-  % if  strcmp(type, 'XY')
-  % XY information is naturally encoded in the feature matrix F
-  % end
+  F = append_F(F, I);
+  %F = append_F(F, get_pos_X(I));
+  %F = append_F(F, get_pos_Y(I));
+  %F = append_F(F, get_Variance(I));
+  %F = append_F(F, get_Mean(I));
   if isempty(F)
     warning('No Feature is Extracted');
   end
@@ -45,6 +23,7 @@ for i = 1:p
 end
 F_ = F;
 end
+
 function S = get_pos_X(I)
   [p q] = size(I);
   S = ones(size(I));
@@ -52,6 +31,7 @@ function S = get_pos_X(I)
     S(i, :) = i;
   end
 end
+
 function S = get_pos_Y(I)
   [p q] = size(I);
   S = ones(size(I));
@@ -60,12 +40,19 @@ function S = get_pos_Y(I)
   end
 end
 
-function get_Partial_X(I, F)
+function S = get_Partial_Y(I)
   [p q] = size(I);
-  for i = 1:p
-    for j = 1:q
-      % TODO Not implemented yet.
-    end
+  S = zeros(size(I));
+  for i = 1:p-1
+    S(i, :) = I(i+1, :) - I(i, :);
+  end
+end
+
+function S = get_Partial_X(I)
+  [p q] = size(I);
+  S = zeros(size(I));
+  for i = 1:q-1
+    S(:, i) = I(:, i+1) - I(:, i);
   end
 end
 

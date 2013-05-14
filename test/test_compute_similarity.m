@@ -14,7 +14,7 @@ function test_compute_similarity()
   imagesc(I);
   pause;
   k = 3;
-  IDX = image_seg(I, k, 'Intensity');
+  IDX = image_seg(I, k);
   IDX
   for i = 1:k
     figure; clf;
