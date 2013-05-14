@@ -7,6 +7,8 @@ function S = sample_generator(sample_name)
       S = two_cocentric_circles();
     elseif strcmp('3-class-rectangle', sample_name) == 1
       S = three_class_rectangle();
+    elseif strcmp('4-complex-rectangle', sample_name) == 1
+      S = four_complex_rectangle();
     else
       error('No such sample!');
     end
