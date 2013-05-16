@@ -4,3 +4,5 @@ spec-clus_min-cut/
 resource/
 record/
 *.mat
+
+*.pdf

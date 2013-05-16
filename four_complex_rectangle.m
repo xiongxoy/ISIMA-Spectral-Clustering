@@ -13,6 +13,8 @@ function  I = four_complex_rectangle()
   I(1:p/2, 1:q/2) = add_gradient(I(1:p/2, 1:q/2), 0, 150,'x');
   I(p/2+1:p, 1:q/2) = add_texture(I(p/2+1:p, 1:q/2), 20, [5, 1], c1);
   I(1:p/2, q/2+1:q) = add_dots(I(1:p/2, q/2+1:q), 7, c1);
+  
+  I = uint8(I);
   imagesc(I);
 end
 
