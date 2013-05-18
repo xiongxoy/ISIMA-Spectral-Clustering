@@ -1,12 +1,12 @@
-function fill_border(S, d)
+function F_ = fill_border(F, d)
 % fill corners
-  s = size(S);
+  s = size(F);
   for i=1:d
     for j=1:d
       F{i,j} = F{d+1, d+1};
-      F{s(1)-i, j} = F{s(1)-d, d+1};
-      F{s(1)-i, s(2)-j} = F{s(1)-d, s(2)-d};
-      F{i, s(2)-j} = F{d+1, S(2)-d};
+      F{s(1)-(i-1), j} = F{s(1)-d, d+1};
+      F{s(1)-(i-1), s(2)-(j-1)} = F{s(1)-d, s(2)-d};
+      F{i, s(2)-(j-1)} = F{d+1, s(2)-d};
     end
   end
 % fill edge
@@ -30,4 +30,5 @@ function fill_border(S, d)
       F{i, j} = F{i, s(2)-d};
     end
   end
+  F_ = F;
 end

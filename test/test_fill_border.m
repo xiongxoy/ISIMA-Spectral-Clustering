@@ -1,12 +1,4 @@
-S = zeros(6,6);
-S(3:4, 3:4) = [1 2; 3 4];
-S_ = fill_border(S, d);
-b = (S_ == [1 1 1 2 2 2;
-       1 1 1 2 2 2;
-       1 1 1 2 2 2;
-       3 3 3 4 4 4;
-       3 3 3 4 4 4;
-       3 3 3 4 4 4]);
-if ~b
-  error('failed: test_fill_border');
-end
+S = zeros(8,8);
+S(4:5, 4:5) = [1 2; 3 4]
+S = num2cell(S);
+S = fill_border(S, 3)

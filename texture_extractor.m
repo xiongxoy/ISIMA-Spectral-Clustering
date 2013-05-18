@@ -9,9 +9,9 @@ function F = texture_extractor(I)
   glcm = glcm ./ sum(glcm(:));
 
   % Get row and colum subscripts of GLCM.
-  s = size(tGLCM);
+  s = size(glcm);
   [c, r] = meshgrid(1:s(1), 1:s(2));
-
+   c = c(:); r = r(:);
   % calculate features
   F = [];
   F(end+1) = calculateHomogeneity(glcm, r, c);
