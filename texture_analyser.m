@@ -1,6 +1,6 @@
-function IDX = texture_analyser(I, k)
+function F = texture_analyser(I, d)
 %% classify each piexl by texture
-  d = 2;
+  d = 3;
   s = size(I);
   F = cell(s);
   %threshold whole image
@@ -13,16 +13,6 @@ function IDX = texture_analyser(I, k)
     end
   end
   F = fill_border(F, d);
-  toc;
-  IDX = texture_seg(F, k);
-end
-
-function IDX = texture_seg(F, k)
-  A = compute_similarity(F);
-  toc;
-  tIDX = spectral_clustering_from_affinity_mat(A, k);
-  toc;
-  IDX = reshape(tIDX, size(F));
   toc;
 end
 
