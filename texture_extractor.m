@@ -11,15 +11,20 @@ function F = texture_extractor(I)
   % Get row and colum subscripts of GLCM.
   s = size(glcm);
   [c, r] = meshgrid(1:s(1), 1:s(2));
-   c = c(:); r = r(:);
+  c = c(:); r = r(:);
   % calculate features
   F = [];
   F(end+1) = calculateHomogeneity(glcm, r, c);
   F(end+1) = calculateEnergy(glcm);
-  %F(end+1) = calculateEntropy(glcm);
+  F(end+1) = calculateEntropy(glcm);
 end
 
 function E = calculateEntropy(glcm)
+  glcm = glcm(:);
+  foo = -log(glcm);
+  foo(foo == Inf) = 0;
+  E = sum(glcm .* foo);
+
 end
 
 function E = calculateEnergy(glcm)
@@ -34,8 +39,6 @@ function H = calculateHomogeneity(glcm, r, c)
 end
 %% thresholding
 %% extract graycomatrix
-%% 四块大区，各自得到一个数值
-%% 然后在分别四分，
-%%   如果是一致的区域，就不要分了
-%%   如果是变动大的区域，就要继续分
-%  有必要合么？
+%% ???大�?�??????��?�????%% ?��??��???????
+%%   �??????��??��?�?���?????
+%%   �??????�大??????就�?继续??%  ???�??�??
