@@ -1,8 +1,9 @@
-function F = feature_extractor(I)
+function F = feature_extractor(I, type)
 % This function extracts features from inpute image
 % @param I inpute image
 % @return F a cell matrix specifying feature vetors for each pixel
-  F = cell(size(I));
+F = cell(size(I));
+if nargin == 1
   F = append_F(F, double(I));
   F = append_F(F, get_pos_X(I));
   F = append_F(F, get_pos_Y(I));
@@ -12,7 +13,9 @@ function F = feature_extractor(I)
   F = append_F(F, get_Mean(I));
   %F = append_F(F, texture_analyser(I));
   F = normalize_features(F);
-
+elseif strcmp(type, 'I')
+  F = append_F(F, double(I));
+end
   if isempty(F)
     warning('No Feature is Extracted');
   end

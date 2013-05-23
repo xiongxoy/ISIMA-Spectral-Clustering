@@ -20,8 +20,6 @@ end
 
 function IDX = spectral_clustering_segmentation(I, k)
   F = feature_extractor(I);
-  save('F');
   A = compute_similarity(F);
   IDX = spectral_clustering_from_affinity_mat(A, k);
 end
-
