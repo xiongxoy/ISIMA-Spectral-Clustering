@@ -16,4 +16,3 @@ function F = texture_analyser(I, d)
   toc;
 end
 
-
