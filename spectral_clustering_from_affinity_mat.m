@@ -1,4 +1,13 @@
 function I = spectral_clustering_from_affinity_mat(A, k)
+    if true
+      I = spectral_clustering_Ng(A, k);
+    else
+      I = spectral_clustering_Shi_Malik(A, k);
+    end
+end
+
+
+function I = spectral_clustering_Ng(A, k)
     n = size(A,1);
     %% 2. Get Laplacian
     D = zeros(n);
@@ -27,15 +36,39 @@ function I = spectral_clustering_from_affinity_mat(A, k)
         end
     end
 
-    if k == 3
-      plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.'); %debug
-      title 'Plot of Y'
-      pause;
-    end
+    %if k == 3
+      %plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.'); %debug
+      %title 'Plot of Y'
+      %pause;
+    %end
 
     %% 5. Clustering Y via K-means
     repeat_nr = 50;
-    [I C] = kmeans(Y, k, 'replicates', repeat_nr);
+    [I, ~] = kmeans(Y, k, 'replicates', repeat_nr);
+%   draw_result(I2, S);
+%   repeat = input('1 to repeat, 0 stop');
+end
+
+function I = spectral_clustering_Shi_Malik(A, k)
+    n = size(A,1);
+    %% 2. Get Laplacian
+    D = zeros(n);
+    for i=1:n
+        D(i,i) = sum(A(i,:));
+    end
+    % L
+    L = D - W;
+    for i=1:n
+      L(i,i) = L(i,i) / D(i,i);
+    end
+    %% 3. Choose top K eigenvectors and Form Matrix X
+    [V, D] = eig(L); % *colum* of V is the eigenvectors of L
+                     % V is already sorted in asceding order of eigenvalues
+    X = V(:, 1 : k); % Need the k smallest eigenvectors
+
+    %% 5. Clustering Y via K-means
+    repeat_nr = 50;
+    [I, ~] = kmeans(X, k, 'replicates', repeat_nr);
 %   draw_result(I2, S);
 %   repeat = input('1 to repeat, 0 stop');
 end
