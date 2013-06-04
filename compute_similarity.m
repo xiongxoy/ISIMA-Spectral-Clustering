@@ -1,4 +1,4 @@
-function A = compute_similarity(F)
+function A = compute_similarity(F, sig)
 % In this function the similarity between each feature point is computed
 % Point to far from each other are not comsidered
   p = size(F, 1);
@@ -23,31 +23,12 @@ function A = compute_similarity(F)
     end
   end
 
-  P = zeros(n, n);
-  p_max = min(r, floor( (n-1) * sqrt(2) ));
-  %% deal with position information
-  for i = 1:n
-    for j = 1:i
-      tmp = point_distance(i, j, p, q);
-      if tmp <= r
-        P(i, j) = tmp; % otherwise it would be 0;
-      end
-      P(j, i) = P(i, j);
-    end
+  if nargin == 2
+    A1 = get_affinity_mat(D, d_max, sig);
+  else
+    A1 = get_affinity_mat(D, d_max);
   end
 
-  figure;clf;
-  imagesc(D);
-  title 'distance mat of D'
-  figure;clf;
-  imagesc(P);
-  title 'distance mat of P'
-  %D = D ./ d_max;
-  %P = P ./ p_max;
-
-  A1 = get_affinity_mat(D, d_max);
-  A2 = get_affinity_mat(P, p_max, 4.0);
-  %A =  A1 .* A2;
   A = A1;
   for i = 1:n
     for j = 1:i
@@ -58,15 +39,7 @@ function A = compute_similarity(F)
     end
   end
 
-  figure;clf;
-  imagesc(A1)
-  title 'affinity mat of D'
-  figure;clf;
-  imagesc(A2)
-  title 'affinity mat of P'
-  figure;clf;
   imagesc(A);
-  save('A');
   title 'affinity mat of final A'
   pause; close all;
 end

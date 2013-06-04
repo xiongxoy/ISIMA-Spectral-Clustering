@@ -3,6 +3,8 @@ I = SEC(I)
 if true
 %% use EM for Mixture of Gaussian
   IDX = reshape(emgm(I(:)', k), size(I));
+elseif true
+  IDX = kmeans(I);
 else
 %% use Spectral Clustering
   F = feature_extractor(I, 'I');
