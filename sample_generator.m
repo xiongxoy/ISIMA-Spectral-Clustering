@@ -29,8 +29,6 @@ function S = two_cocentric_circles()
     S = [];
     S = append_circle(S, 1, center);
     S = append_circle(S, 1.5, center);
-    close All;
-%    plot(S(:,1), S(:,2), '.');
 end
 
 %% three circles

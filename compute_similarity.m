@@ -39,9 +39,10 @@ function A = compute_similarity(F, sig)
     end
   end
 
+  figure;
   imagesc(A);
   title 'affinity mat of final A'
-  pause; close all;
+  pause;
 end
 
 function A = get_affinity_mat(D, d_max, sigma_)
